@@ -11,7 +11,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id      String   @id @default(cuid())
-  name    String
+model Question {
+  id        String   @id @default(cuid())
+  text      String
+  Subject   Subject? @relation(fields: [subjectId], references: [id])
+  subjectId String?
+}
+
+model Subject {
+  id       String     @id @default(cuid())
+  name     String
+  label    String
+  Question Question[]
 }

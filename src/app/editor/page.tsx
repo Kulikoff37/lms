@@ -1,9 +1,9 @@
-import { Testing } from "@/modules/Testing";
+import { Editor } from "@/modules/Editor";
 
 export default function Home() {
   return (
     <>
-      <Testing />
+      <Editor />
     </>
   );
 }
