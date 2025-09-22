@@ -5,6 +5,9 @@ export async function GET() {
   const questions = await prisma.question.findMany()
 
   return NextResponse.json({
-    data: questions,
+    data: {
+      questions,
+      topic: 'Выбранные вопросы',
+    },
   })
 }
