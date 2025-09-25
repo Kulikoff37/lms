@@ -40,7 +40,9 @@ export const Testing: React.FC = () => {
         <Typography.Text>Результат: {score} / {questions.length}</Typography.Text>
       ) : null}
       {current ? (
-        <QuestionForm question={current} />
+        <QuestionForm 
+          question={current} 
+        />
       ) : null}
       <Flex gap={8} style={{ marginTop: 12 }}>
         <Button onClick={goPrev} disabled={currentIndex === 0}>Предыдущий</Button>

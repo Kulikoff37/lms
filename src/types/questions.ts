@@ -32,10 +32,12 @@ export interface ISubject {
 
 export interface ISingle {
   text: string;
-  options: ISingleOption[];
-  answer: number
+  options: { text: string }[];
+  answer: number;
 }
 
-export interface ISingleOption {
+export interface IMultiple {
   text: string;
+  options: { text: string }[];
+  answer: number[]
 }

@@ -5,6 +5,9 @@ import { mapQuestions } from './mapper/mapQuestions'
 
 export const defaultInitState: EditorState = {
   questions: [],
+  isEditModalOpen: false,
+  selectedQuestion: null,
+  isAddModalOpen: false,
 }
 
 export const createEditorStore = (
@@ -23,6 +26,27 @@ export const createEditorStore = (
           console.error('Error fetching questions:', error.message);
         }
       }
-    }    
+    },
+    openEditModal: (question) => set({ isEditModalOpen: true, selectedQuestion: question }),
+    closeEditModal: () => set({ isEditModalOpen: false }),
+    updateQuestion: (updated) => set((state) => ({
+      // optimistic local update; real API call can be added later
+      selectedQuestion: updated,
+    })),
+    openAddModal: () => set({ isAddModalOpen: true }),
+    closeAddModal: () => set({ isAddModalOpen: false }),
+    addQuestion: (question) => set((state) => ({
+      questions: [
+        ...state.questions,
+        {
+          key: question.id,
+          text: question.text,
+          subject: question.subject?.name || question.subjectId,
+          type: question.type,
+          section: question.section,
+        },
+      ],
+      isAddModalOpen: false,
+    })),
   }))
 }

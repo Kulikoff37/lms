@@ -42,6 +42,7 @@ export const useTestingStore = <T,>(
     )
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const stableSelector = useCallback(selector, [])
   return useStore(testingStoreContext, stableSelector)
 }
