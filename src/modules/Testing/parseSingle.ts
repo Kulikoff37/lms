@@ -1,8 +1,6 @@
 import { ISingle, IMultiple } from "@/types/questions";
+import { stripWrappingQuotes } from "@/utils/string";
 
-/**
- * Проверяет, является ли значение объектом типа ISingle
- */
 function isISingle(value: unknown): value is ISingle {
   return (
     typeof value === "object" &&
@@ -23,9 +21,6 @@ function isISingle(value: unknown): value is ISingle {
   );
 }
 
-/**
- * Проверяет, является ли значение объектом типа IMultiple
- */
 function isIMultiple(value: unknown): value is IMultiple {
   return (
     typeof value === "object" &&
@@ -49,22 +44,7 @@ function isIMultiple(value: unknown): value is IMultiple {
   );
 }
 
-/**
- * Убирает кавычки с начала и конца строки
- */
-function stripWrappingQuotes(raw: string): string {
-  if (!raw) return raw;
-  const trimmed = raw.trim();
-  const startsWithQuote =
-    trimmed.startsWith('"') || trimmed.startsWith("'");
-  const endsWithQuote =
-    trimmed.endsWith('"') || trimmed.endsWith("'");
-  
-  if (startsWithQuote && endsWithQuote && trimmed.length >= 2) {
-    return trimmed.slice(1, -1);
-  }
-  return trimmed;
-}
+
 
 /**
  * Парсит текст вопроса в структуру ISingle или IMultiple

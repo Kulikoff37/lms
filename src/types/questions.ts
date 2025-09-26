@@ -8,6 +8,7 @@ export interface IQuestion {
   subject: string;
   type: string;
   section: string;
+  content: string;
 }
 
 export interface IQuestionServer {

@@ -1,20 +1,32 @@
 'use client'
 
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Card, Typography, Form, Input, Space, Button, Select } from 'antd'
 import { useEditorStore } from '@/providers/editorStoreProvider'
 import { IQuestionServer } from '@/types/questions'
 import { v4 as uuidv4 } from 'uuid'
 
 export const NewQuestionForm: React.FC = () => {
-  const { addQuestion, closeAddModal } = useEditorStore((s) => s)
+  const { addQuestion, closeAddModal, subjects, getSubjects } = useEditorStore((s) => s)
   const [type, setType] = useState<'single' | 'multiple'>('single')
   const [questionText, setQuestionText] = useState('')
   const [options, setOptions] = useState<string[]>(['', ''])
   const [answer, setAnswer] = useState<string>('0')
   const [answersMultiple, setAnswersMultiple] = useState<string>('')
-  const [subject, setSubject] = useState('')
+  const [subjectId, setSubjectId] = useState('')
   const [section, setSection] = useState('')
+
+  useEffect(() => {
+    if (!subjects || subjects.length === 0) {
+      getSubjects()
+    }
+  }, [subjects, getSubjects])
+
+  useEffect(() => {
+    if (!subjectId && subjects && subjects.length > 0) {
+      setSubjectId(subjects[0].id)
+    }
+  }, [subjects, subjectId])
 
   const canSave = useMemo(() => {
     const hasText = questionText.trim().length > 0
@@ -30,6 +42,7 @@ export const NewQuestionForm: React.FC = () => {
 
   const handleSave = () => {
     const id = uuidv4()
+    const selectedSubject = subjects.find((s) => s.id === subjectId)
     const payload = type === 'single'
       ? {
           text: JSON.stringify({
@@ -53,10 +66,10 @@ export const NewQuestionForm: React.FC = () => {
     const newQuestion: IQuestionServer = {
       id,
       text: payload.text,
-      subjectId: subject || 'subject',
+      subjectId: selectedSubject?.id || subjectId || 'subject',
       type,
       section,
-      subject: { id: subject || 'subject', name: subject || 'Предмет', label: subject || 'Предмет' },
+      subject: selectedSubject ?? { id: subjectId || 'subject', name: 'Предмет', label: 'Предмет' },
     }
 
     addQuestion(newQuestion)
@@ -74,7 +87,12 @@ export const NewQuestionForm: React.FC = () => {
           />
         </Form.Item>
         <Form.Item label="Предмет">
-          <Input value={subject} onChange={(e) => setSubject(e.target.value)} />
+          <Select
+            value={subjectId}
+            options={(subjects || []).map((s) => ({ value: s.id, label: s.label }))}
+            onChange={(v) => setSubjectId(v)}
+            placeholder="Выберите предмет"
+          />
         </Form.Item>
         <Form.Item label="Раздел">
           <Input value={section} onChange={(e) => setSection(e.target.value)} />
@@ -107,6 +125,7 @@ export const NewQuestionForm: React.FC = () => {
     </Card>
   )
 }
+
 
 
 

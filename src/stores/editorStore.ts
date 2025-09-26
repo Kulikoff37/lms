@@ -1,10 +1,11 @@
-import { fetchQuestions } from '@/services/api'
+import { fetchQuestions, fetchSubjects } from '@/services/api'
 import { EditorState, EditorStore } from '@/types/editor'
 import { createStore } from 'zustand'
 import { mapQuestions } from './mapper/mapQuestions'
 
 export const defaultInitState: EditorState = {
   questions: [],
+  subjects: [],
   isEditModalOpen: false,
   selectedQuestion: null,
   isAddModalOpen: false,
@@ -27,10 +28,21 @@ export const createEditorStore = (
         }
       }
     },
+    getSubjects: async () => {
+      try {
+        const response = await fetchSubjects();
+        if (response) {
+          set({ subjects: response?.data })
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error('Error fetching questions:', error.message);
+        }
+      } 
+    },
     openEditModal: (question) => set({ isEditModalOpen: true, selectedQuestion: question }),
     closeEditModal: () => set({ isEditModalOpen: false }),
-    updateQuestion: (updated) => set((state) => ({
-      // optimistic local update; real API call can be added later
+    updateQuestion: (updated) => set(() => ({
       selectedQuestion: updated,
     })),
     openAddModal: () => set({ isAddModalOpen: true }),
