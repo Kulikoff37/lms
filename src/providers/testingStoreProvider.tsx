@@ -1,7 +1,7 @@
 'use client'
 
 import { useStore } from 'zustand/react'
-import { ReactNode, createContext, useRef, useContext, useCallback } from 'react'
+import { ReactNode, createContext, useRef, useContext } from 'react'
 import { createTestingStore } from '@/stores/testingStore'
 import { TestingStore } from '@/types/testing'
 
@@ -42,9 +42,7 @@ export const useTestingStore = <T,>(
     )
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const stableSelector = useCallback(selector, [])
-  return useStore(testingStoreContext, stableSelector)
+  return useStore(testingStoreContext, selector)
 }
 
 

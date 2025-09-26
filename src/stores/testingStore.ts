@@ -33,30 +33,36 @@ export const createTestingStore = (
       const state = get()
       const previous = state.answersByQuestionId
       const nextAnswers = { ...previous, [questionId]: optionIndex }
+      set({ answersByQuestionId: nextAnswers })
+    },
+    checkResults: () => {
+      const state = get()
       const questions: IQuestionServer[] = state.testing?.questions ?? []
-      const answeredCount = questions.filter(q => nextAnswers[q.id] !== undefined && (Array.isArray(nextAnswers[q.id]) ? (nextAnswers[q.id] as number[]).length > 0 : true)).length
-      let completed = false
-      let score = state.score
-      if (questions.length > 0 && answeredCount === questions.length) {
-        completed = true
-        score = 0
-        for (const q of questions) {
-          const parsed = parseSingle(q.text)
-          const selected = nextAnswers[q.id]
-          if (!parsed) continue
-          if (Array.isArray(parsed.answer)) {
-            if (Array.isArray(selected)) {
-              const a = [...parsed.answer].sort((x, y) => x - y)
-              const b = [...selected].sort((x, y) => x - y)
-              const equal = a.length === b.length && a.every((v, i) => v === b[i])
-              if (equal) score += 1
-            }
-          } else {
-            if (!Array.isArray(selected) && selected === parsed.answer) score += 1
+      const answers = state.answersByQuestionId
+      const answeredCount = questions.filter(q => answers[q.id] !== undefined && (Array.isArray(answers[q.id]) ? (answers[q.id] as number[]).length > 0 : true)).length
+      if (questions.length === 0 || answeredCount !== questions.length) {
+        return
+      }
+      let score = 0
+      for (const q of questions) {
+        const parsed = parseSingle(q.text)
+        const selected = answers[q.id]
+        if (!parsed) continue
+        if (Array.isArray(parsed.answer)) {
+          if (Array.isArray(selected)) {
+            const a = [...parsed.answer].sort((x, y) => x - y)
+            const b = [...selected].sort((x, y) => x - y)
+            const equal = a.length === b.length && a.every((v, i) => v === b[i])
+            if (equal) score += 1
           }
+        } else {
+          if (!Array.isArray(selected) && selected === parsed.answer) score += 1
         }
       }
-      set({ answersByQuestionId: nextAnswers, completed, score })
+      set({ completed: true, score })
+    },
+    resetTesting: () => {
+      set({ currentIndex: 0, answersByQuestionId: {}, completed: false, score: 0 })
     },
     goNext: () => {
       const state = get()

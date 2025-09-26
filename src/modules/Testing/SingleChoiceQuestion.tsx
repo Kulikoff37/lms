@@ -10,10 +10,11 @@ type Props = {
 }
 
 export const SingleChoiceQuestion: React.FC<Props> = ({ question, parsedQuestion }) => {
-  const { selectAnswer, selected } = useTestingStore(
+  const { selectAnswer, selected, completed } = useTestingStore(
     useShallow(s => ({
       selectAnswer: s.selectAnswer,
       selected: s.answersByQuestionId[question.id],
+      completed: s.completed,
     }))
   )
 
@@ -21,13 +22,20 @@ export const SingleChoiceQuestion: React.FC<Props> = ({ question, parsedQuestion
     <Radio.Group
       onChange={(e) => selectAnswer(question.id, e.target.value)}
       value={!Array.isArray(selected) ? selected : undefined}
+      disabled={completed}
     >
       <Space direction="vertical">
-        {parsedQuestion.options.map((opt, idx) => (
-          <Radio key={idx} value={idx}>
-            {opt.text}
-          </Radio>
-        ))}
+        {parsedQuestion.options.map((opt, idx) => {
+          const isCorrect = idx === parsedQuestion.answer
+          const isSelected = selected === idx
+          const color = completed && isSelected && !isCorrect ? 'red' : completed && isCorrect ? 'green' : undefined
+          const style = completed && isCorrect ? { textDecoration: 'underline', textDecorationColor: 'green' } : undefined
+          return (
+            <Radio key={idx} value={idx} style={{ color, ...(style ?? {}) }}>
+              {opt.text}
+            </Radio>
+          )
+        })}
       </Space>
     </Radio.Group>
   )

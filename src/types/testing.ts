@@ -11,6 +11,8 @@ export type TestingState = {
 export type TestingActions = {
   getTesting: () => void
   selectAnswer: (questionId: string, selected: number | number[]) => void
+  checkResults: () => void
+  resetTesting: () => void
   goNext: () => void
   goPrev: () => void
 }
