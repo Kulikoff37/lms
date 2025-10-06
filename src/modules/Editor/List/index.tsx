@@ -4,14 +4,22 @@ import { columns } from "./columns";
 import { useEditorStore } from "@/providers/editorStoreProvider";
 
 export const List: React.FC = () => {
-  const { questions, openEditModal } = useEditorStore((state) => state)
+  const { questions, openEditModal, selectedQuestionIds, setSelectedQuestionIds } = useEditorStore((state) => state)
+  
+  const rowSelection = {
+    selectedRowKeys: selectedQuestionIds,
+    onChange: (selectedRowKeys: React.Key[]) => {
+      setSelectedQuestionIds(selectedRowKeys as string[]);
+    },
+  };
+
   return (
     <Table<IQuestion>
+      rowSelection={rowSelection}
       columns={columns}
       dataSource={questions || []}
       onRow={(record) => ({
         onClick: () => {
-          // Map table row to server shape minimal data for modal
           openEditModal({
             id: record.key,
             text: record.text,

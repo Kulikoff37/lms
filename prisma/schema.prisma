@@ -14,15 +14,34 @@ datasource db {
 model Question {
   id        String   @id @default(cuid())
   text      String
+  type      String
   subject   Subject? @relation(fields: [subjectId], references: [id])
   subjectId String?
-  type      String
-  section   String
+  section   Section? @relation(fields: [sectionId], references: [id])
+  sectionId String?
 }
 
 model Subject {
-  id       String     @id @default(cuid())
-  name     String
-  label    String
-  question Question[]
+  id        String      @id @default(cuid())
+  name      String
+  label     String
+  question  Question[]
+  studyText StudyText[]
+}
+
+model Section {
+  id        String      @id @default(cuid())
+  name      String
+  sectionId String
+  question  Question[]
+  studyText StudyText[]
+}
+
+model StudyText {
+  id        String   @id @default(cuid())
+  content   String
+  subject   Subject? @relation(fields: [subjectId], references: [id])
+  subjectId String?
+  section   Section? @relation(fields: [sectionId], references: [id])
+  sectionId String?
 }

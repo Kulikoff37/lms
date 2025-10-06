@@ -6,6 +6,7 @@ export type EditorState = {
   isEditModalOpen: boolean
   selectedQuestion: IQuestionServer | null
   isAddModalOpen: boolean
+  selectedQuestionIds: string[]
 }
 
 export type EditorActions = {
@@ -17,6 +18,8 @@ export type EditorActions = {
   openAddModal: () => void
   closeAddModal: () => void
   addQuestion: (question: IQuestionServer) => void
+  setSelectedQuestionIds: (ids: string[]) => void
+  toggleQuestionSelection: (id: string) => void
 }
 
 export type EditorStore = EditorState & EditorActions

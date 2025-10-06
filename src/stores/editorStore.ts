@@ -1,4 +1,4 @@
-import { fetchQuestions, fetchSubjects } from '@/services/api'
+import { createQuestion, fetchQuestions, fetchSubjects } from '@/services/api'
 import { EditorState, EditorStore } from '@/types/editor'
 import { createStore } from 'zustand'
 import { mapQuestions } from './mapper/mapQuestions'
@@ -9,6 +9,7 @@ export const defaultInitState: EditorState = {
   isEditModalOpen: false,
   selectedQuestion: null,
   isAddModalOpen: false,
+  selectedQuestionIds: [],
 }
 
 export const createEditorStore = (
@@ -47,18 +48,39 @@ export const createEditorStore = (
     })),
     openAddModal: () => set({ isAddModalOpen: true }),
     closeAddModal: () => set({ isAddModalOpen: false }),
-    addQuestion: (question) => set((state) => ({
-      questions: [
-        ...state.questions,
-        {
-          key: question.id,
-          text: question.text,
-          subject: question.subject?.name || question.subjectId,
-          type: question.type,
-          section: question.section,
-        },
-      ],
-      isAddModalOpen: false,
-    })),
+    addQuestion: async (question) => {
+      try {
+        const response = await createQuestion(question);
+        if (response) {
+          set((state) => ({
+            questions: [
+              ...state.questions,
+              {
+                key: question.id,
+                text: question.text,
+                content: question.text, // Assuming content should be the same as text for new questions
+                subject: question.subject?.name || question.subjectId,
+                type: question.type,
+                section: question.section,
+              },
+            ],
+            isAddModalOpen: false,
+          }));
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error('Error creating question:', error.message);
+        }
+      }
+    },
+    setSelectedQuestionIds: (ids) => set({ selectedQuestionIds: ids }),
+    toggleQuestionSelection: (id) => set((state) => {
+      const currentIds = state.selectedQuestionIds;
+      if (currentIds.includes(id)) {
+        return { selectedQuestionIds: currentIds.filter(item => item !== id) };
+      } else {
+        return { selectedQuestionIds: [...currentIds, id] };
+      }
+    }),
   }))
 }

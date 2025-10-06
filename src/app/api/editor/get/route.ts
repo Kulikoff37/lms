@@ -5,6 +5,7 @@ export async function GET() {
   const questions = await prisma.question.findMany({
     include: {
       subject: true,
+      section: true
     }
   })
 

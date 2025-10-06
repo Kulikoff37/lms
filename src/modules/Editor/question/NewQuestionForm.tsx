@@ -15,6 +15,8 @@ export const NewQuestionForm: React.FC = () => {
   const [answersMultiple, setAnswersMultiple] = useState<string>('')
   const [subjectId, setSubjectId] = useState('')
   const [section, setSection] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!subjects || subjects.length === 0) {
@@ -40,40 +42,50 @@ export const NewQuestionForm: React.FC = () => {
   const onAddOption = () => setOptions(prev => [...prev, ''])
   const onChangeOption = (idx: number, val: string) => setOptions(prev => prev.map((o, i) => i === idx ? val : o))
 
-  const handleSave = () => {
-    const id = uuidv4()
-    const selectedSubject = subjects.find((s) => s.id === subjectId)
-    const payload = type === 'single'
-      ? {
-          text: JSON.stringify({
-            text: questionText,
-            options: options.map(o => ({ text: o })),
-            answer: Number(answer)
-          }),
-        }
-      : {
-          text: JSON.stringify({
-            text: questionText,
-            options: options.map(o => ({ text: o })),
-            answer: answersMultiple
-              .split(',')
-              .map(s => s.trim())
-              .filter(Boolean)
-              .map(Number),
-          }),
-        }
+  const handleSave = async () => {
+    setLoading(true)
+    setError(null)
+    
+    try {
+      const id = uuidv4()
+      const selectedSubject = subjects.find((s) => s.id === subjectId)
+      const payload = type === 'single'
+        ? {
+            text: JSON.stringify({
+              text: questionText,
+              options: options.map(o => ({ text: o })),
+              answer: Number(answer)
+            }),
+          }
+        : {
+            text: JSON.stringify({
+              text: questionText,
+              options: options.map(o => ({ text: o })),
+              answer: answersMultiple
+                .split(',')
+                .map(s => s.trim())
+                .filter(Boolean)
+                .map(Number),
+            }),
+          }
 
-    const newQuestion: IQuestionServer = {
-      id,
-      text: payload.text,
-      subjectId: selectedSubject?.id || subjectId || 'subject',
-      type,
-      section,
-      subject: selectedSubject ?? { id: subjectId || 'subject', name: 'Предмет', label: 'Предмет' },
+      const newQuestion: IQuestionServer = {
+        id,
+        text: payload.text,
+        subjectId: selectedSubject?.id || subjectId || 'subject',
+        type,
+        section,
+        subject: selectedSubject ?? { id: subjectId || 'subject', name: 'Предмет', label: 'Предмет' },
+      }
+
+      await addQuestion(newQuestion)
+      closeAddModal()
+    } catch (err) {
+      setError('Ошибка при сохранении вопроса. Попробуйте снова.')
+      console.error('Error saving question:', err)
+    } finally {
+      setLoading(false)
     }
-
-    addQuestion(newQuestion)
-    closeAddModal()
   }
 
   return (
@@ -117,9 +129,23 @@ export const NewQuestionForm: React.FC = () => {
             <Input value={answersMultiple} onChange={(e) => setAnswersMultiple(e.target.value)} />
           </Form.Item>
         )}
-        <Space>
-          <Button type="primary" disabled={!canSave} onClick={handleSave}>Сохранить</Button>
-          <Button onClick={closeAddModal}>Отмена</Button>
+        <Space direction="vertical" style={{ width: '100%' }}>
+          {error && (
+            <Typography.Text type="danger">{error}</Typography.Text>
+          )}
+          <Space>
+            <Button
+              type="primary"
+              disabled={!canSave || loading}
+              onClick={handleSave}
+              loading={loading}
+            >
+              Сохранить
+            </Button>
+            <Button onClick={closeAddModal} disabled={loading}>
+              Отмена
+            </Button>
+          </Space>
         </Space>
       </Form>
     </Card>
