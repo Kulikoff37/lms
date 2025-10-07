@@ -1,4 +1,4 @@
-import { createQuestion, fetchQuestions, fetchSubjects } from '@/services/api'
+import { createQuestion, fetchQuestions, fetchSubjects, fetchSections } from '@/services/api'
 import { EditorState, EditorStore } from '@/types/editor'
 import { createStore } from 'zustand'
 import { mapQuestions } from './mapper/mapQuestions'
@@ -6,6 +6,7 @@ import { mapQuestions } from './mapper/mapQuestions'
 export const defaultInitState: EditorState = {
   questions: [],
   subjects: [],
+  sections: [],
   isEditModalOpen: false,
   selectedQuestion: null,
   isAddModalOpen: false,
@@ -39,7 +40,19 @@ export const createEditorStore = (
         if (error instanceof Error) {
           console.error('Error fetching questions:', error.message);
         }
-      } 
+      }
+    },
+    getSections: async () => {
+      try {
+        const response = await fetchSections();
+        if (response) {
+          set({ sections: response?.data })
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error('Error fetching sections:', error.message);
+        }
+      }
     },
     openEditModal: (question) => set({ isEditModalOpen: true, selectedQuestion: question }),
     closeEditModal: () => set({ isEditModalOpen: false }),

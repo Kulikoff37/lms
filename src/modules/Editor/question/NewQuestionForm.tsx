@@ -7,14 +7,14 @@ import { IQuestionServer } from '@/types/questions'
 import { v4 as uuidv4 } from 'uuid'
 
 export const NewQuestionForm: React.FC = () => {
-  const { addQuestion, closeAddModal, subjects, getSubjects } = useEditorStore((s) => s)
+  const { addQuestion, closeAddModal, subjects, sections, getSubjects, getSections } = useEditorStore((s) => s)
   const [type, setType] = useState<'single' | 'multiple'>('single')
   const [questionText, setQuestionText] = useState('')
   const [options, setOptions] = useState<string[]>(['', ''])
   const [answer, setAnswer] = useState<string>('0')
   const [answersMultiple, setAnswersMultiple] = useState<string>('')
   const [subjectId, setSubjectId] = useState('')
-  const [section, setSection] = useState('')
+  const [sectionId, setSectionId] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -22,13 +22,22 @@ export const NewQuestionForm: React.FC = () => {
     if (!subjects || subjects.length === 0) {
       getSubjects()
     }
-  }, [subjects, getSubjects])
+    if (!sections || sections.length === 0) {
+      getSections()
+    }
+  }, [subjects, sections, getSubjects, getSections])
 
   useEffect(() => {
     if (!subjectId && subjects && subjects.length > 0) {
       setSubjectId(subjects[0].id)
     }
   }, [subjects, subjectId])
+
+  useEffect(() => {
+    if (!sectionId && sections && sections.length > 0) {
+      setSectionId(sections[0].id)
+    }
+  }, [sections, sectionId])
 
   const canSave = useMemo(() => {
     const hasText = questionText.trim().length > 0
@@ -74,7 +83,7 @@ export const NewQuestionForm: React.FC = () => {
         text: payload.text,
         subjectId: selectedSubject?.id || subjectId || 'subject',
         type,
-        section,
+        section: sectionId,
         subject: selectedSubject ?? { id: subjectId || 'subject', name: 'Предмет', label: 'Предмет' },
       }
 
@@ -107,7 +116,12 @@ export const NewQuestionForm: React.FC = () => {
           />
         </Form.Item>
         <Form.Item label="Раздел">
-          <Input value={section} onChange={(e) => setSection(e.target.value)} />
+          <Select
+            value={sectionId}
+            options={(sections || []).map((s) => ({ value: s.id, label: s.sectionId }))}
+            onChange={(v) => setSectionId(v)}
+            placeholder="Выберите раздел"
+          />
         </Form.Item>
         <Form.Item label="Текст вопроса">
           <Input.TextArea value={questionText} onChange={(e) => setQuestionText(e.target.value)} rows={3} />

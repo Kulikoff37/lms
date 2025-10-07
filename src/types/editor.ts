@@ -1,8 +1,9 @@
-import type { IQuestion, IQuestionServer, ISubject } from "./questions"
+import type { IQuestion, IQuestionServer, ISubject, ISection } from "./questions"
 
 export type EditorState = {
   questions: IQuestion[]
   subjects: ISubject[]
+  sections: ISection[]
   isEditModalOpen: boolean
   selectedQuestion: IQuestionServer | null
   isAddModalOpen: boolean
@@ -12,6 +13,7 @@ export type EditorState = {
 export type EditorActions = {
   getQuestions: () => void
   getSubjects: () => void
+  getSections: () => void
   openEditModal: (question: IQuestionServer) => void
   closeEditModal: () => void
   updateQuestion: (updated: IQuestionServer) => void

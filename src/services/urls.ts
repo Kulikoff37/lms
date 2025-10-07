@@ -3,6 +3,7 @@ export const URL_PART: Record<string, string> = {
   CREATE_QUESTION: 'editor/create',
   GET_TEST: 'testing',
   GET_SUBJECTS: 'subject/get',
+  GET_SECTIONS: 'section/get',
 }
 
 

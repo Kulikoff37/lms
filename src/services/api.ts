@@ -1,4 +1,4 @@
-import type { IQuestionServer, IResponce, ISubject, ITestingServer } from '@/types/questions';
+import type { IQuestionServer, IResponce, ISubject, ISection, ITestingServer } from '@/types/questions';
 import { API_URL, URL_PART, headers } from './urls';
 
 export const fetchQuestions = async (): Promise<IResponce<IQuestionServer[]>> => {
@@ -13,6 +13,11 @@ export const fetchTesting = async (): Promise<IResponce<ITestingServer>> => {
 
 export const fetchSubjects = async (): Promise<IResponce<ISubject[]>> => {
   const res = await fetch(`${API_URL}${URL_PART.GET_SUBJECTS}`);
+  return res.json();
+}
+
+export const fetchSections = async (): Promise<IResponce<ISection[]>> => {
+  const res = await fetch(`${API_URL}${URL_PART.GET_SECTIONS}`);
   return res.json();
 }
 

@@ -31,6 +31,12 @@ export interface ISubject {
   label: string
 }
 
+export interface ISection {
+  id: string;
+  name: string;
+  sectionId: string;
+}
+
 export interface ISingle {
   text: string;
   options: { text: string }[];

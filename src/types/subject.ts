@@ -3,3 +3,9 @@ export interface ISubject {
   name: string;
   label: string;
 }
+
+export interface ISection {
+  id: string;
+  name: string;
+  sectionId: string;
+}
