@@ -49,30 +49,32 @@ function isIMultiple(value: unknown): value is IMultiple {
 /**
  * Парсит текст вопроса в структуру ISingle или IMultiple
  */
-export function parseSingle(text: string | null | undefined): ISingle | IMultiple | null {
+export function parseSingle(text: string | ISingle | IMultiple | null | undefined): ISingle | IMultiple | null {
   if (!text) return null;
 
-  let attempt: unknown = null;
-  
-  try {
-    // Первый уровень парсинга
-    attempt = JSON.parse(text);
-  } catch (firstError) {
-    // Если первый парсинг провалился, попробуем убрать кавычки
-    try {
-      const unwrapped = stripWrappingQuotes(text);
-      attempt = JSON.parse(unwrapped);
-    } catch (secondError) {
-      return null;
-    }
-  }
+  let attempt: unknown = text;
 
-  // Второй уровень: проверка, если результат - строка
-  if (typeof attempt === "string") {
+  if (typeof text === 'string') {
     try {
-      attempt = JSON.parse(attempt);
-    } catch (thirdError) {
-      return null;
+      // Первый уровень парсинга
+      attempt = JSON.parse(text);
+    } catch (firstError) {
+      // Если первый парсинг провалился, попробуем убрать кавычки
+      try {
+        const unwrapped = stripWrappingQuotes(text);
+        attempt = JSON.parse(unwrapped);
+      } catch (secondError) {
+        return null;
+      }
+    }
+
+    // Второй уровень: проверка, если результат - строка
+    if (typeof attempt === "string") {
+      try {
+        attempt = JSON.parse(attempt);
+      } catch (thirdError) {
+        return null;
+      }
     }
   }
 

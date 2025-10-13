@@ -1,5 +1,6 @@
 import { createQuestion, fetchQuestions, fetchSubjects, fetchSections } from '@/services/api'
 import { EditorState, EditorStore } from '@/types/editor'
+import { IQuestionServer } from '@/types/questions'
 import { createStore } from 'zustand'
 import { mapQuestions } from './mapper/mapQuestions'
 
@@ -61,22 +62,13 @@ export const createEditorStore = (
     })),
     openAddModal: () => set({ isAddModalOpen: true }),
     closeAddModal: () => set({ isAddModalOpen: false }),
-    addQuestion: async (question) => {
+    addQuestion: async (question: IQuestionServer) => {
       try {
         const response = await createQuestion(question);
         if (response) {
+          const newQuestion = mapQuestions([response.data])[0];
           set((state) => ({
-            questions: [
-              ...state.questions,
-              {
-                key: question.id,
-                text: question.text,
-                content: question.text, // Assuming content should be the same as text for new questions
-                subject: question.subject?.name || question.subjectId,
-                type: question.type,
-                section: question.section,
-              },
-            ],
+            questions: [...state.questions, newQuestion],
             isAddModalOpen: false,
           }));
         }

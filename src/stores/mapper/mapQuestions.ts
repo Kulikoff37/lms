@@ -1,21 +1,27 @@
-import { IQuestion, IQuestionServer } from "@/types/questions"
-import { stripWrappingQuotes } from "@/utils/string"
+import type { IQuestion, IQuestionServer, IQuestionText } from "@/types/questions"
 
-const mapTetxt = (text: string): string => {
-  const json = stripWrappingQuotes(text)
-  return JSON.parse(json)?.text || ''
+const parseTextContent = (text: string | IQuestionText): string => {
+  if (typeof text === 'string') {
+    return text;
+  }
+  return JSON.stringify(text);
 }
 
-export const mapQuestions = (severData: IQuestionServer[]): IQuestion[] => {
-  if (!severData && !Array.isArray(severData)) {
+export const mapQuestions = (serverData: IQuestionServer[]): IQuestion[] => {
+  if (!serverData || !Array.isArray(serverData)) {
     return [];
   }
-  return severData.map((item) => ({
+  return serverData.map((item) => {
+    const parsedText = typeof item.text === 'string' ? JSON.parse(item.text) as IQuestionText : item.text;
+    return {
       key: item.id,
-      text: item.text,
-      content: mapTetxt(item.text),
-      subject: item.subject.name,
+      text: parsedText.text,
+      content: parseTextContent(item.text),
+      subject: item.subjectId,
       type: item.type,
-      section: item.section
-  }));
+      section: item.sectionId,
+      options: parsedText.options.map(option => option.text),
+      answer: parsedText.answer
+    };
+  });
 }

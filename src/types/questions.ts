@@ -4,25 +4,32 @@ export interface IResponce<T> {
 
 export interface IQuestion {
   key: string;
-  text: string
+  text: string;
   subject: string;
-  type: string;
+  type: TQuestionType;
   section: string;
   content: string;
+  options?: string[];
+  answer?: number | number[];
 }
 
 export interface IQuestionServer {
   id: string;
-  text: string;
+  text: string | IQuestionText;
   subjectId: string;
-  type: string;
-  section: string;
-  subject: ISubject;
-} 
+  type: TQuestionType;
+  sectionId: string;
+}
+
+export interface IQuestionText {
+  text: string;
+  options: { text: string }[];
+  answer: number | number[];
+}
 
 export interface ITestingServer {
   questions: IQuestionServer[];
-  topic: string
+  topic: string;
 }
 
 export interface ISubject {
@@ -48,3 +55,5 @@ export interface IMultiple {
   options: { text: string }[];
   answer: number[]
 }
+
+export type TQuestionType = 'single' | 'multiple';

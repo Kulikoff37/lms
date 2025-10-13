@@ -12,13 +12,14 @@ datasource db {
 }
 
 model Question {
-  id        String   @id @default(cuid())
-  text      String
-  type      String
-  subject   Subject? @relation(fields: [subjectId], references: [id])
-  subjectId String?
-  section   Section? @relation(fields: [sectionId], references: [id])
-  sectionId String?
+  id          String   @id @default(cuid())
+  text        Json
+  type        String
+  explanation String?
+  subject     Subject? @relation(fields: [subjectId], references: [id])
+  subjectId   String?
+  section     Section? @relation(fields: [sectionId], references: [id])
+  sectionId   String?
 }
 
 model Subject {
@@ -44,4 +45,20 @@ model StudyText {
   subjectId String?
   section   Section? @relation(fields: [sectionId], references: [id])
   sectionId String?
+}
+
+model Mistake {
+  id         String @id @default(cuid())
+  wright     String
+  wrong      String
+  amount     Int
+  questionId String
+}
+
+model TestVariant {
+  id        Int      @id @default(autoincrement())
+  title     String
+  questions Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

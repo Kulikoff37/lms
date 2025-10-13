@@ -1,11 +1,14 @@
+import { QuestionCell } from '@/shared/cells/QuestionCell';
 import { IQuestion } from '@/types/questions';
 import type { TableProps } from 'antd';
+
 
 export const columns: TableProps<IQuestion>['columns'] = [
   {
     title: 'Текст вопроса',
     dataIndex: 'content',
-    key: 'content'
+    key: 'content',
+    render: (_, record) => <QuestionCell data={record} />
   },
   {
     title: 'Предмет',
