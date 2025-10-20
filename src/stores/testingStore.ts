@@ -45,7 +45,7 @@ export const createTestingStore = (
       }
       let score = 0
       for (const q of questions) {
-        const parsed = parseSingle(q.text)
+        const parsed = q.text ? parseSingle(typeof q.text === 'string' ? q.text : q.text.text) : null
         const selected = answers[q.id]
         if (!parsed) continue
         if (Array.isArray(parsed.answer)) {

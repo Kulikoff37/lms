@@ -8,7 +8,7 @@ import { EditorQuestionForm } from "./question/EditorQuestionForm"
 import { NewQuestionForm } from "./question/NewQuestionForm"
 
 export const QuestionRepositiry: React.FC = () => {
-  const { getQuestions, getSubjects, isEditModalOpen, selectedQuestion, closeEditModal, isAddModalOpen, openAddModal, closeAddModal } = useEditorStore((state) => state)
+  const { getQuestions, getSubjects, isEditModalOpen, selectedQuestion, closeEditModal, isAddModalOpen, openAddModal, closeAddModal, selectedQuestionIds } = useEditorStore((state) => state)
   useEffect(() => {
     getQuestions()
     getSubjects()

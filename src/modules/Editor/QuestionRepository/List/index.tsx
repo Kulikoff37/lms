@@ -13,23 +13,43 @@ export const List: React.FC = () => {
     },
   };
 
+  const handleCreateVariant = async () => {
+    if (!selectedQuestionIds.length) return alert("Выберите вопросы для варианта");
+    const title = prompt("Введите название тестового варианта:");
+    if (!title) return;
+
+    await fetch("/api/testVariant/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, questionIds: selectedQuestionIds }),
+    });
+    alert("Вариант теста успешно создан!");
+  };
+
   return (
-    <Table<IQuestion>
-      rowSelection={rowSelection}
-      columns={columns}
-      dataSource={questions || []}
-      onRow={(record) => ({
-        onClick: () => {
-          openEditModal({
-            id: record.key,
-            text: record.text,
-            subjectId: record.subject,
-            type: record.type,
-            section: record.section,
-            subject: { id: record.subject, name: record.subject, label: record.subject }
-          })
-        }
-      })}
-    />
+    <div>
+      <button
+        onClick={handleCreateVariant}
+        style={{ marginBottom: 16, padding: "8px 12px", backgroundColor: "#1677ff", color: "#fff", border: "none", borderRadius: 4 }}
+      >
+        Сформировать вариант
+      </button>
+      <Table<IQuestion>
+        rowSelection={rowSelection}
+        columns={columns}
+        dataSource={questions || []}
+        onRow={(record) => ({
+          onClick: () => {
+            openEditModal({
+              id: record.key,
+              text: record.text,
+              subjectId: record.subject,
+              type: record.type,
+              sectionId: record.section
+            })
+          }
+        })}
+      />
+    </div>
   )
 };
