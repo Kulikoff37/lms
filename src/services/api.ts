@@ -6,8 +6,9 @@ export const fetchQuestions = async (): Promise<IResponce<IQuestionServer[]>> =>
   return res.json();
 }
 
-export const fetchTesting = async (): Promise<IResponce<ITestingServer>> => {
-  const res = await fetch(`${API_URL}${URL_PART.GET_TEST}`);
+export const fetchTesting = async (variantId?: number): Promise<IResponce<ITestingServer>> => {
+  const url = variantId ? `${API_URL}${URL_PART.GET_TEST}?variant=${variantId}` : `${API_URL}${URL_PART.GET_TEST}`;
+  const res = await fetch(url);
   return res.json();
 }
 

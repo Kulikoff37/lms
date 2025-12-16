@@ -14,6 +14,13 @@ export const columns: TableProps<IQuestion>['columns'] = [
     title: 'Предмет',
     dataIndex: 'subject',
     key: 'subject',
+    render: (subject) => {
+      // If subject is an object, return its label; otherwise, return it as is
+      if (typeof subject === 'object' && subject !== null && 'label' in subject) {
+        return subject.label;
+      }
+      return subject;
+    }
   },
   {
     title: 'Тип вопроса',
@@ -24,5 +31,12 @@ export const columns: TableProps<IQuestion>['columns'] = [
     title: 'Раздел',
     dataIndex: 'section',
     key: 'section',
+    render: (section) => {
+      // If section is an object, return its sectionId; otherwise, return it as is
+      if (typeof section === 'object' && section !== null && 'sectionId' in section) {
+        return section.sectionId;
+      }
+      return section;
+    }
   }
 ];

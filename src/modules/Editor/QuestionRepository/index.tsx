@@ -8,16 +8,43 @@ import { EditorQuestionForm } from "./question/EditorQuestionForm"
 import { NewQuestionForm } from "./question/NewQuestionForm"
 
 export const QuestionRepositiry: React.FC = () => {
-  const { getQuestions, getSubjects, isEditModalOpen, selectedQuestion, closeEditModal, isAddModalOpen, openAddModal, closeAddModal, selectedQuestionIds } = useEditorStore((state) => state)
+  const {
+    getQuestions,
+    getSubjects,
+    getSections,
+    isEditModalOpen,
+    selectedQuestion,
+    closeEditModal,
+    isAddModalOpen,
+    openAddModal,
+    closeAddModal,
+    selectedQuestionIds
+  } = useEditorStore((state) => state)
+
   useEffect(() => {
     getQuestions()
     getSubjects()
-  }, [getQuestions, getSubjects])
-  
+    getSections()
+  }, [getQuestions, getSubjects, getSections])
+
+  const handleCreateVariant = async () => {
+    if (!selectedQuestionIds.length) return alert("Выберите вопросы для варианта");
+    const title = prompt("Введите название тестового варианта:");
+    if (!title) return;
+
+    await fetch("/api/testVariant/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, questionIds: selectedQuestionIds }),
+    });
+    alert("Вариант теста успешно создан!");
+  };
+
   return (
     <>
       <Space style={{ marginBottom: 16 }}>
         <Button type="primary" onClick={openAddModal}>Добавить вопрос</Button>
+        <Button type="primary" onClick={handleCreateVariant}>Сформировать вариант</Button>
       </Space>
       <List />
       <Modal

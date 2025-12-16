@@ -7,6 +7,6 @@ interface IProps {
 export const Single: FC<IProps> = ({ question }) => {
   const parsed = JSON.parse(question)
   return (
-    <p>{ parsed?.text }</p>
+    <p style={{ margin: 0 }}>{ parsed?.text }</p>
   )
 }

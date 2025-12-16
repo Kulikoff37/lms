@@ -17,9 +17,9 @@ export const createTestingStore = (
 ) => {
   return createStore<TestingStore>()((set, get) => ({
     ...initState,
-    getTesting: async () => {
+    getTesting: async (variantId?: number) => {
       try {
-        const response = await fetchTesting();
+        const response = await fetchTesting(variantId);
         if (response) {
           set({ testing: response.data, currentIndex: 0, answersByQuestionId: {}, completed: false, score: 0 })
         }

@@ -1,3 +1,5 @@
+import type { JsonValue } from "@prisma/client/runtime/binary";
+
 export interface IResponce<T> {
   data: T;
 }
@@ -15,10 +17,10 @@ export interface IQuestion {
 
 export interface IQuestionServer {
   id: string;
-  text: string | IQuestionText;
-  subjectId: string;
-  type: TQuestionType;
-  sectionId: string;
+  text: JsonValue;
+  subjectId: string | null;
+  type: string;
+  sectionId: string | null;
 }
 
 export interface IQuestionText {

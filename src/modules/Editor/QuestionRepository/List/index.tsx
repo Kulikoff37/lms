@@ -2,10 +2,30 @@ import { IQuestion } from "@/types/questions";
 import { Table } from "antd";
 import { columns } from "./columns";
 import { useEditorStore } from "@/providers/editorStoreProvider";
+import { useDeepEqual } from '@/hooks/useDeepEqual';
 
 export const List: React.FC = () => {
-  const { questions, openEditModal, selectedQuestionIds, setSelectedQuestionIds } = useEditorStore((state) => state)
-  
+  const { questions, subjects, sections, openEditModal, selectedQuestionIds, setSelectedQuestionIds } = useEditorStore(useDeepEqual((state) => ({
+    questions: state.questions,
+    subjects: state.subjects,
+    sections: state.sections,
+    openEditModal: state.openEditModal,
+    selectedQuestionIds: state.selectedQuestionIds,
+    setSelectedQuestionIds: state.setSelectedQuestionIds,
+  })))
+
+  // Map the questions to include full subject and section objects
+  const enhancedQuestions = questions?.map(question => {
+    const subjectObj = subjects?.find(subject => subject.id === question.subject);
+    const sectionObj = sections?.find(section => section.id === question.section);
+
+    return {
+      ...question,
+      subject: subjectObj || question.subject,  // If found, use the full object; otherwise, keep the original
+      section: sectionObj || question.section   // If found, use the full object; otherwise, keep the original
+    };
+  }) || [];
+
   const rowSelection = {
     selectedRowKeys: selectedQuestionIds,
     onChange: (selectedRowKeys: React.Key[]) => {
@@ -13,39 +33,20 @@ export const List: React.FC = () => {
     },
   };
 
-  const handleCreateVariant = async () => {
-    if (!selectedQuestionIds.length) return alert("Выберите вопросы для варианта");
-    const title = prompt("Введите название тестового варианта:");
-    if (!title) return;
-
-    await fetch("/api/testVariant/create", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, questionIds: selectedQuestionIds }),
-    });
-    alert("Вариант теста успешно создан!");
-  };
-
   return (
     <div>
-      <button
-        onClick={handleCreateVariant}
-        style={{ marginBottom: 16, padding: "8px 12px", backgroundColor: "#1677ff", color: "#fff", border: "none", borderRadius: 4 }}
-      >
-        Сформировать вариант
-      </button>
       <Table<IQuestion>
         rowSelection={rowSelection}
         columns={columns}
-        dataSource={questions || []}
+        dataSource={enhancedQuestions || []}
         onRow={(record) => ({
           onClick: () => {
             openEditModal({
               id: record.key,
               text: record.text,
-              subjectId: record.subject,
+              subjectId: typeof record.subject === 'object' ? record.subject.id : record.subject,
               type: record.type,
-              sectionId: record.section
+              sectionId: typeof record.section === 'object' ? record.section.id : record.section
             })
           }
         })}
