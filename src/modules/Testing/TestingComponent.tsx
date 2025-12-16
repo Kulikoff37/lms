@@ -66,7 +66,23 @@ export const TestingComponent: React.FC<TestingComponentProps> = ({ variantId })
         </Typography.Text>
       ) : null}
       {completed ? (
-        <Typography.Text className={styles.resultText}>Результат: {score} / {questions.length}</Typography.Text>
+        <div className={styles.resultCard}>
+          <Typography.Title level={5} className={styles.resultTitle}>Результат теста</Typography.Title>
+          <div className={styles.resultStats}>
+            <div className={styles.statItem}>
+              <Typography.Text type="secondary">Всего вопросов:</Typography.Text>
+              <Typography.Text strong>{questions.length}</Typography.Text>
+            </div>
+            <div className={styles.statItem}>
+              <Typography.Text type="secondary">Правильно:</Typography.Text>
+              <Typography.Text strong>{score}</Typography.Text>
+            </div>
+            <div className={styles.statItem}>
+              <Typography.Text type="secondary">Ошибок:</Typography.Text>
+              <Typography.Text strong>{questions.length - score}</Typography.Text>
+            </div>
+          </div>
+        </div>
       ) : null}
       {completed ? (
         <>

@@ -1,6 +1,6 @@
 import { IQuestion } from "@/types/questions";
 import { Table } from "antd";
-import { columns } from "./columns";
+import { useQuestionColumns } from "./columns";
 import { useEditorStore } from "@/providers/editorStoreProvider";
 import { useDeepEqual } from '@/hooks/useDeepEqual';
 
@@ -13,6 +13,8 @@ export const List: React.FC = () => {
     selectedQuestionIds: state.selectedQuestionIds,
     setSelectedQuestionIds: state.setSelectedQuestionIds,
   })))
+
+  const columns = useQuestionColumns();
 
   // Map the questions to include full subject and section objects
   const enhancedQuestions = questions?.map(question => {
@@ -39,17 +41,6 @@ export const List: React.FC = () => {
         rowSelection={rowSelection}
         columns={columns}
         dataSource={enhancedQuestions || []}
-        onRow={(record) => ({
-          onClick: () => {
-            openEditModal({
-              id: record.key,
-              text: record.text,
-              subjectId: typeof record.subject === 'object' ? record.subject.id : record.subject,
-              type: record.type,
-              sectionId: typeof record.section === 'object' ? record.section.id : record.section
-            })
-          }
-        })}
       />
     </div>
   )

@@ -2,6 +2,7 @@ import type { IQuestion, IQuestionServer, ISubject, ISection } from "./questions
 
 export type EditorState = {
   questions: IQuestion[]
+  serverQuestions: IQuestionServer[]
   subjects: ISubject[]
   sections: ISection[]
   isEditModalOpen: boolean
@@ -21,6 +22,7 @@ export type EditorActions = {
   closeAddModal: () => void
   addQuestion: (question: IQuestionServer) => void
   setSelectedQuestionIds: (ids: string[]) => void
+  deleteQuestion: (id: string) => Promise<any>
   toggleQuestionSelection: (id: string) => void
 }
 

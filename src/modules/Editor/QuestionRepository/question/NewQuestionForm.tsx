@@ -54,7 +54,7 @@ export const NewQuestionForm: React.FC = () => {
   const handleSave = async () => {
     setLoading(true)
     setError(null)
-    
+
     try {
       const id = uuidv4()
       const selectedSubject = subjects.find((s) => s.id === subjectId)
@@ -83,7 +83,7 @@ export const NewQuestionForm: React.FC = () => {
         text: payload.text,
         subjectId: selectedSubject?.id || subjectId || 'subject',
         type,
-        section: sectionId,
+        sectionId: sectionId,
         subject: selectedSubject ?? { id: subjectId || 'subject', name: 'Предмет', label: 'Предмет' },
       }
 

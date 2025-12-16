@@ -76,9 +76,7 @@ export const TestVariants = () => {
                 danger
                 icon={<DeleteOutlined />}
                 loading={loading}
-              >
-                Удалить
-              </Button>
+              />
             </Popconfirm>
           ]}
         >

@@ -12,7 +12,23 @@ export const mapQuestions = (serverData: IQuestionServer[]): IQuestion[] => {
     return [];
   }
   return serverData.map((item) => {
-    const parsedText = typeof item.text === 'string' ? JSON.parse(item.text) as IQuestionText : item.text;
+    let parsedText: IQuestionText = { text: '', options: [], answer: 0 };
+    let originalTextString: string = '';
+
+    if (typeof item.text === 'string') {
+      originalTextString = item.text;
+      try {
+        parsedText = JSON.parse(item.text) as IQuestionText;
+      } catch (e) {
+        console.error('Error parsing text for question:', item.id, e);
+        parsedText = { text: item.text, options: [], answer: 0 };
+      }
+    } else {
+      // If item.text is already an object, stringify it for later use
+      originalTextString = JSON.stringify(item.text);
+      parsedText = item.text;
+    }
+
     return {
       key: item.id,
       text: parsedText.text,
@@ -20,7 +36,7 @@ export const mapQuestions = (serverData: IQuestionServer[]): IQuestion[] => {
       subject: item.subjectId,
       type: item.type,
       section: item.sectionId,
-      options: parsedText.options.map(option => option.text),
+      options: parsedText.options ? parsedText.options.map(option => option.text) : [],
       answer: parsedText.answer
     };
   });
