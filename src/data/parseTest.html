@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Question Parser Test</title>
+</head>
+<body>
+    <!-- Sample HTML content will be loaded here -->
+    <div id="container">
+        <!-- Content will be inserted here via JavaScript -->
+    </div>
+    
+    <script>
+        // Embed the HTML content from sample.html
+        const sampleHtml = `<!-- Copy and paste the content from sample.html here -->`;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load the sample html content
+            const container = document.getElementById('container');
+            
+            // Fetch the sample.html content and insert it
+            fetch('./sample.html')
+                .then(response => response.text())
+                .then(htmlContent => {
+                    container.innerHTML = htmlContent;
+                    
+                    // Now run the parsing script
+                    setTimeout(() => {
+                        // The parsing logic will be inserted here
+                        const questionContainer = document.querySelector('form[name^="checkform"]');
+                        
+                        let result = [];
+                        
+                        if (questionContainer) {
+                          // Extract the question text from the first table cell with class 'cell_0'
+                          const questionCell = questionContainer.querySelector('td.cell_0');
+                          let questionText = '';
+                        
+                          if (questionCell) {
+                            // Get all text content excluding the script elements and their contents
+                            const clone = questionCell.cloneNode(true);
+                            // Remove script elements that might interfere with text extraction
+                            const scripts = clone.querySelectorAll('script');
+                            scripts.forEach(script => script.remove());
+                            questionText = clone.textContent.trim();
+                          }
+                        
+                          // Extract the image src if available
+                          let imageUrl = '';
+                          const imgElement = questionContainer.querySelector('td.cell_0 img');
+                          if (imgElement && imgElement.src) {
+                            imageUrl = imgElement.src;
+                          }
+                        
+                          // Extract options from the active-distractor rows
+                          const optionRows = questionContainer.querySelectorAll('tr.active-distractor');
+                          const options = [];
+                        
+                          optionRows.forEach(row => {
+                            const pElement = row.querySelector('td p.MsoNormal');
+                            if (pElement) {
+                              const optionText = pElement.textContent.trim();
+                              if (optionText) {
+                                options.push({
+                                  text: optionText
+                                });
+                              }
+                            }
+                          });
+                        
+                          // For now, set correctAnswer to null since we can't determine from HTML alone
+                          // In a real scenario, this would come from answer keys
+                          const questionObject = {
+                            text: questionText,
+                            image: imageUrl,
+                            correctAnswer: null, // This would need to be provided separately as it's typically not in the question HTML
+                            options: options
+                          };
+                          
+                          result = [questionObject]; // Return as an array for consistency
+                        }
+                        
+                        // Display the result in the page
+                        const pre = document.createElement('pre');
+                        pre.textContent = JSON.stringify(result, null, 2);
+                        document.body.appendChild(pre);
+                    }, 100); // Small delay to allow content to load
+                })
+                .catch(error => {
+                    console.error('Error loading sample.html:', error);
+                    
+                    // In case fetch fails, embed the HTML content directly
+                    container.innerHTML = `<form action="javascript:noAction()" name="checkformF5CD44" id="checkformF5CD44" method="get">
+		<input type="Hidden" name="guid" value="010A879018ACBA9B45C82A816E0388D4">
+		<script language="JavaScript">
+ function setAnswerF5CD44(aform)
+ {;}
+
+
+			function selectVariantF5CD44(n) {
+				for (i=1; i<=4; i++) {
+					element=document.getElementById('checkformF5CD44').elements['answer'+i];
+					element.checked=(i==n);
+					var tr = element.parentNode.parentNode;
+					if (i==n) {
+						if (!tr.classList.contains('checked-distractor'))
+					        tr.classList.add('checked-distractor');
+			        } else {
+    					tr.classList.remove('checked-distractor');
+    	            }
+				}
+			}
+			</script>
+<table width="100%" border="0" bgcolor="gray" cellspacing="1" cellpadding="2">
+  <tbody><tr><td valign="top" width="100%" bgcolor="#FAFBCA" class="cell_0">  <p class="MsoNormal"><a name="_GoBack"></a>Как называется лабораторный инструмент, изображённый на рисунке?</p> <p class="MsoNormal">&nbsp;</p> <p class="MsoNormal"><script language="javascript"> ShowPictureQ('docs/0E1FA4229923A5CE4FC368155127ED90/questions/010A879018ACBA9B45C82A816E0388D4/xs3qstsrc010A879018ACBA9B45C82A816E0388D4_1_1680528478.jpg');</script><img src="../../docs/0E1FA4229923A5CE4FC368155127ED90/questions/010A879018ACBA9B45C82A816E0388D4/xs3qstsrc010A879018ACBA9B45C82A816E0388D4_1_1680528478.jpg" align="ABSMIDDLE" alt="undefined" border="0"> </p>  </td></tr>
+  <tr bgcolor="#FFFFFF"><td>
+	  <table width="100%" class="submit-outblock">
+	  	<tbody><tr><td class="varinats-block"><a name="variants"></a><br><div><table width="100%" cellpadding="3" class="distractors-table"><tbody><tr class="active-distractor" onclick="selectVariantF5CD44(1)"><td width="0"><input type="radio" id="answer1" name="answer" value="1"></td><td width="0">&nbsp;<b>1)</b>&nbsp;</td><td width="100%" align="left"><p class="MsoNormal"><a name="_GoBack"></a>препаровальная игла</p></td></tr><tr class="active-distractor" onclick="selectVariantF5CD44(2)"><td width="0"><input type="radio" id="answer2" name="answer" value="2"></td><td width="0">&nbsp;<b>2)</b>&nbsp;</td><td width="100%" align="left"><p class="MsoNormal"><a name="_GoBack"></a>пинцет</p></td></tr><tr class="active-distractor" onclick="selectVariantF5CD44(3)"><td width="0"><input type="radio" id="answer3" name="answer" value="3"></td><td width="0">&nbsp;<b>3)</b>&nbsp;</td><td width="100%" align="left"><p class="MsoNormal"><a name="_GoBack"></a>скальпель</p></td></tr><tr class="active-distractor" onclick="selectVariantF5CD44(4)"><td width="0"><input type="radio" id="answer4" name="answer" value="4"></td><td width="0">&nbsp;<b>4)</b>&nbsp;</td><td width="100%" align="left"><p class="MsoNormal"><a name="_GoBack"></a>микротом</p></td></tr></tbody></table></div><br></td></tr>
+	  	<tr><td class="submit-block"></td></tr>
+	  </tbody></table>
+  </td></tr></tbody></table>
+</form>`;
+                    
+                    // Run the parsing script after DOM content is loaded
+                    setTimeout(() => {
+                        // The parsing logic will be inserted here
+                        const questionContainer = document.querySelector('form[name^="checkform"]');
+                        
+                        let result = [];
+                        
+                        if (questionContainer) {
+                          // Extract the question text from the first table cell with class 'cell_0'
+                          const questionCell = questionContainer.querySelector('td.cell_0');
+                          let questionText = '';
+                        
+                          if (questionCell) {
+                            // Get all text content excluding the script elements and their contents
+                            const clone = questionCell.cloneNode(true);
+                            // Remove script elements that might interfere with text extraction
+                            const scripts = clone.querySelectorAll('script');
+                            scripts.forEach(script => script.remove());
+                            questionText = clone.textContent.trim();
+                          }
+                        
+                          // Extract the image src if available
+                          let imageUrl = '';
+                          const imgElement = questionContainer.querySelector('td.cell_0 img');
+                          if (imgElement && imgElement.src) {
+                            imageUrl = imgElement.src;
+                          }
+                        
+                          // Extract options from the active-distractor rows
+                          const optionRows = questionContainer.querySelectorAll('tr.active-distractor');
+                          const options = [];
+                        
+                          optionRows.forEach(row => {
+                            const pElement = row.querySelector('td p.MsoNormal');
+                            if (pElement) {
+                              const optionText = pElement.textContent.trim();
+                              if (optionText) {
+                                options.push({
+                                  text: optionText
+                                });
+                              }
+                            }
+                          });
+                        
+                          // For now, set correctAnswer to null since we can't determine from HTML alone
+                          // In a real scenario, this would come from answer keys
+                          const questionObject = {
+                            text: questionText,
+                            image: imageUrl,
+                            correctAnswer: null, // This would need to be provided separately as it's typically not in the question HTML
+                            options: options
+                          };
+                          
+                          result = [questionObject]; // Return as an array for consistency
+                        }
+                        
+                        // Display the result in the page
+                        const pre = document.createElement('pre');
+                        pre.textContent = JSON.stringify(result, null, 2);
+                        document.body.appendChild(pre);
+                    }, 100);
+                });
+        });
+    </script>
+</body>
+</html>

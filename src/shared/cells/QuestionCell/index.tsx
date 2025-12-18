@@ -13,9 +13,9 @@ export const QuestionCell: FC<Props>  = ({ data }) => {
     return <>-</>
   }
   if (type === 'single') {
-    return <Single question={String(content)} />
+    return <Single question={String(content)} showImage={false} />
   }
   if (type === 'multiple') {
-    return <Multiple question={String(content)} />
+    return <Multiple question={String(content)} showImage={false} />
   }
 }

@@ -10,6 +10,7 @@ export const NewQuestionForm: React.FC = () => {
   const { addQuestion, closeAddModal, subjects, sections, getSubjects, getSections } = useEditorStore((s) => s)
   const [type, setType] = useState<'single' | 'multiple'>('single')
   const [questionText, setQuestionText] = useState('')
+  const [imageURL, setImageURL] = useState('')
   const [options, setOptions] = useState<string[]>(['', ''])
   const [answer, setAnswer] = useState<string>('0')
   const [answersMultiple, setAnswersMultiple] = useState<string>('')
@@ -63,7 +64,8 @@ export const NewQuestionForm: React.FC = () => {
             text: JSON.stringify({
               text: questionText,
               options: options.map(o => ({ text: o })),
-              answer: Number(answer)
+              answer: Number(answer),
+              imageUrl: imageURL ? imageURL : undefined
             }),
           }
         : {
@@ -75,6 +77,7 @@ export const NewQuestionForm: React.FC = () => {
                 .map(s => s.trim())
                 .filter(Boolean)
                 .map(Number),
+              imageUrl: type === 'single' && imageURL ? imageURL : undefined
             }),
           }
 
@@ -126,6 +129,15 @@ export const NewQuestionForm: React.FC = () => {
         <Form.Item label="Текст вопроса">
           <Input.TextArea value={questionText} onChange={(e) => setQuestionText(e.target.value)} rows={3} />
         </Form.Item>
+        {type === 'single' && (
+          <Form.Item label="Ссылка на изображение">
+            <Input
+              value={imageURL}
+              onChange={(e) => setImageURL(e.target.value)}
+              placeholder="https://example.com/image.jpg"
+            />
+          </Form.Item>
+        )}
         <Form.Item label="Варианты ответа">
           <Space direction="vertical" style={{ width: '100%' }}>
             {options.map((opt, idx) => (

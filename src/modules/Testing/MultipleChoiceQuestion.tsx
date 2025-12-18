@@ -3,6 +3,7 @@ import { Checkbox, Space } from 'antd'
 import { IMultiple, IQuestionServer } from '@/types/questions'
 import { useTestingStore } from '@/providers/testingStoreProvider'
 import { useShallow } from 'zustand/react/shallow'
+import { QuestionImage } from '@/shared/components/QuestionImage'
 
 type Props = {
   question: IQuestionServer
@@ -19,7 +20,12 @@ export const MultipleChoiceQuestion: React.FC<Props> = ({ question, parsedQuesti
   )
 
   return (
-    <Space direction="vertical">
+    <Space direction="vertical" style={{ width: '100%' }}>
+      <div>
+        <div>{parsedQuestion.text}</div>
+        {parsedQuestion.imageUrl && <QuestionImage imageUrl={parsedQuestion.imageUrl} />}
+      </div>
+
       <Checkbox.Group
         onChange={(vals) => selectAnswer(question.id, vals as number[])}
         value={Array.isArray(selected) ? selected : []}

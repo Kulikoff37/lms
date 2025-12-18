@@ -50,12 +50,14 @@ export interface ISingle {
   text: string;
   options: { text: string }[];
   answer: number;
+  imageUrl?: string;
 }
 
 export interface IMultiple {
   text: string;
   options: { text: string }[];
   answer: number[]
+  imageUrl?: string;
 }
 
 export type TQuestionType = 'single' | 'multiple';

@@ -21,6 +21,7 @@ export const EditorQuestionForm: React.FC<Props> = ({ question }) => {
   }
 
   const isMultiple = question.type === 'multiple'
+  const hasImageUrl = 'imageUrl' in parsed && parsed.imageUrl;
 
   return (
     <Card>
@@ -28,6 +29,11 @@ export const EditorQuestionForm: React.FC<Props> = ({ question }) => {
         <Form.Item label="Текст вопроса">
           <Input.TextArea defaultValue={parsed.text} rows={3} />
         </Form.Item>
+        {question.type === 'single' && (
+          <Form.Item label="Ссылка на изображение">
+            <Input defaultValue={hasImageUrl ? parsed.imageUrl : ''} placeholder="https://example.com/image.jpg" />
+          </Form.Item>
+        )}
         <Form.Item label="Варианты ответа">
           <Space direction="vertical" style={{ width: '100%' }}>
             {parsed.options.map((opt, idx) => (

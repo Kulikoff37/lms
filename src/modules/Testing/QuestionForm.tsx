@@ -26,9 +26,8 @@ export const QuestionForm: React.FC<Props> = ({ question }) => {
 
   return (
     <Card>
-      <Typography.Paragraph>{single.text}</Typography.Paragraph>
       <Form layout="vertical">
-        <Form.Item label="Варианты ответа">
+        <Form.Item>
           {isMultiple ? (
             <MultipleChoiceQuestion 
               question={question} 
