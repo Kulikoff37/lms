@@ -1,5 +1,6 @@
 import { ISingle, IMultiple } from "@/types/questions";
 import { stripWrappingQuotes } from "@/utils/string";
+import { JsonValue } from "@prisma/client/runtime/binary";
 
 function isISingle(value: unknown): value is ISingle {
   return (
@@ -49,7 +50,7 @@ function isIMultiple(value: unknown): value is IMultiple {
 /**
  * Парсит текст вопроса в структуру ISingle или IMultiple
  */
-export function parseSingle(text: string | ISingle | IMultiple | null | undefined): ISingle | IMultiple | null {
+export function parseSingle(text: JsonValue): ISingle | IMultiple | null {
   if (!text) return null;
 
   let attempt: unknown = text;

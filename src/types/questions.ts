@@ -60,4 +60,17 @@ export interface IMultiple {
   imageUrl?: string;
 }
 
-export type TQuestionType = 'single' | 'multiple';
+export interface ICorrespondenceAnswer {
+  source: string
+  recipient: string
+}
+
+export interface ICorrespondence {
+  text: string;
+  source: string[]
+  recipient: string[]
+  answer: ICorrespondenceAnswer[]
+  imageUrl?: string;
+}
+
+export type TQuestionType = 'single' | 'multiple' | 'correspondence';
