@@ -31,7 +31,7 @@ export const createQuestion = async (question: IQuestionServer): Promise<IRespon
   return res.json();
 }
 
-export const deleteQuestion = async (id: string): Promise<IResponce<any>> => {
+export const deleteQuestion = async (id: string): Promise<IResponce<unknown>> => {
   const res = await fetch(`${API_URL}${URL_PART.DELETE_QUESTION}`, {
     method: 'POST',
     headers,
